@@ -1,3 +1,4 @@
+import NavigationBar from "@.components/Navigation/NavigationBar";
 import PlaybackBar from "@.components/NowPlaying/PlaybackBar";
 import Player from "@.components/NowPlaying/Player";
 import Sidebar from "@.components/Sidebar/Sidebar";
@@ -12,7 +13,9 @@ export default async function DashboardLayout({
       <div className="col-span-2 md:col-span-2 xl:col-span-1">
         <Sidebar />
       </div>
-      <div className="col-span-full col-start-3 xl:col-start-2 overflow-x-auto">
+      <div className="relative col-span-full col-start-3 xl:col-start-2 overflow-x-auto">
+        {/* @ts-expect-error Server Component */}
+        <NavigationBar />
         {children}
       </div>
       <div className="col-span-full h-[90px] z-50">

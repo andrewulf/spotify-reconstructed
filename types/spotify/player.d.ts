@@ -1,3 +1,4 @@
+import { Episode } from "./episode";
 import { ErrorResponse, ExternalUrl, Paging, SpotifyType } from "./global";
 import { SimplifiedTrack, Track } from "./track";
 
@@ -109,6 +110,11 @@ export interface CurrentlyPlayingContext extends CurrentlyPlaying {
   repeat_state: RepeatState;
   /** The shuffle state. */
   shuffle_state: "on" | "off";
+}
+
+interface UsersQueueResponse {
+  currently_playing: Track | Episode;
+  queue: Array<Track | Episode>;
 }
 
 /**

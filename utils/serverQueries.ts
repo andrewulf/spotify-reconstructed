@@ -1,15 +1,11 @@
 import { SearchType } from "@.types/spotify";
 import { cookies } from "next/headers";
 import queryString from "query-string";
-import {
-  FeaturedPlaylists,
-  Playlist,
-  SimplifiedPlaylist,
-} from "./../types/spotify/playlist.d";
+import { FeaturedPlaylists, Playlist } from "./../types/spotify/playlist.d";
 import { generateRandomString } from "./generateString";
 
 let scopes =
-  "streaming user-read-private user-read-email user-read-playback-state playlist-read-private user-read-currently-playing user-library-read playlist-read-collaborative";
+  "streaming user-read-private user-read-email user-read-playback-state playlist-read-private user-read-currently-playing user-library-read playlist-read-collaborative user-modify-playback-state";
 let redirect_uri = process.env.REDIRECT_URI;
 
 export function authorizeAccountUsage() {

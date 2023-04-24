@@ -5,9 +5,11 @@ import {
   CurrentlyPlaying,
   Devices,
   Episode,
+  Playlist,
   SimplifiedPlaylist,
   Track,
   UserPlaylist,
+  UsersQueueResponse,
 } from "@.types/spotify";
 
 async function* pageIterator<T>(endpoint: string, accessToken: string) {
@@ -32,23 +34,54 @@ async function* pageIterator<T>(endpoint: string, accessToken: string) {
   yield* requestData(endpoint);
 }
 
-export async function getUserPlaylists(at: string) {
+export async function getUserPlaylists(accessToken: string) {
   const playlistsArr: Pick<SimplifiedPlaylist, "name" | "id">[] = [];
-  if (!at) return;
+  if (!accessToken) return;
   const endpoint = `${SPOTIFY_ENDPOINT}/me/playlists?offset=${0}&limit=${10}`;
-  const data = pageIterator<UserPlaylist>(endpoint, at);
+  const data = pageIterator<UserPlaylist>(endpoint, accessToken);
 
   for await (const playlists of data) {
     for (let playlist of playlists.items) {
-      playlistsArr.push({ name: playlist.name, id: playlist.id });
+      playlistsArr.push({
+        name: playlist.name,
+        id: playlist.id,
+        context: playlist?.uri,
+      });
     }
   }
 
   return playlistsArr;
 }
 
+export async function getSinglePlaylist(
+  playlistId: string,
+  accessToken: string
+) {
+  return fetch(`${SPOTIFY_ENDPOINT}/playlists/${playlistId}`, {
+    headers: { Authorization: "Bearer " + accessToken },
+  })
+    .then((data) => data.json())
+    .then((res) => res as Playlist);
+}
+
+export async function getPlaylistTracks(
+  playlistId: string,
+  accessToken: string,
+  limit: number,
+  offset: number
+) {
+  return fetch(
+    `${SPOTIFY_ENDPOINT}/playlists/${playlistId}/tracks?limit=${limit}&offset=${offset}`,
+    {
+      headers: { Authorization: "Bearer " + accessToken },
+    }
+  )
+    .then((data) => data.json())
+    .then((res) => res as UserPlaylist);
+}
+
 export async function getDevices(access_token: string): Promise<Devices> {
-  return fetch(`https://api.spotify.com/v1/me/player/devices`, {
+  return fetch(`${SPOTIFY_ENDPOINT}/me/player/devices`, {
     method: "GET",
     headers: { Authorization: "Bearer " + access_token },
   })
@@ -59,15 +92,23 @@ export async function getDevices(access_token: string): Promise<Devices> {
 export async function getPlaybackData(
   access_token: string
 ): Promise<CurrentlyPlaying<Track | Episode>> {
-  return fetch(
-    `https://api.spotify.com/v1/me/player?additional_types=episode`,
-    {
-      method: "GET",
-      headers: { Authorization: "Bearer " + access_token },
-    }
-  )
+  return fetch(`${SPOTIFY_ENDPOINT}/me/player?additional_types=episode`, {
+    method: "GET",
+    headers: { Authorization: "Bearer " + access_token },
+  })
     .then((data) => data.json())
     .then((res) => res as CurrentlyPlaying<Track>);
+}
+
+export async function getUserQueue(
+  access_token: string
+): Promise<UsersQueueResponse> {
+  return fetch(`${SPOTIFY_ENDPOINT}/me/player/queue`, {
+    method: "GET",
+    headers: { Authorization: "Bearer " + access_token },
+  })
+    .then((data) => data.json())
+    .then((res) => res as UsersQueueResponse);
 }
 
 export const CLIENT_QUERY = {
@@ -75,4 +116,6 @@ export const CLIENT_QUERY = {
   PLAYBACK_FN: getPlaybackData,
   DEVICES_KEY: "devices",
   DEVICES_FN: getDevices,
+  USERQUEUE_KEY: "user-queue",
+  USERQUEUE_FN: getUserQueue,
 };

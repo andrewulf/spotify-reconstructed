@@ -1,8 +1,8 @@
 import useAccessToken from "@.hooks/useAccessToken";
 import { usePlaylistStore } from "@.store/playlist";
-import { getUserPlaylists } from "@.utils/clientQueries";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { getUserPlaylists } from "./queries/player.queries";
 
 function PlaylistServices() {
   const [accessToken] = useAccessToken();

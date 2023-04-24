@@ -37,7 +37,7 @@ export default function NavigationItems() {
         <span className="bg-gradient-to-r from-purple-500/80 to-white/50 rounded-sm">
           <IconHeartFilled className="p-1 text-white/70" />
         </span>
-        <Link href="/collection/library">Liked songs</Link>
+        <Link href="/dashboard/liked">Liked songs</Link>
       </span>
       <span className="[&>*]:text-white/70 [&>*]:transition-all [&>*]:text-sm [&>*]:font-semibold [&>*]:hover:text-white flex gap-4 items-center">
         <span className="bg-green-800 rounded-sm">

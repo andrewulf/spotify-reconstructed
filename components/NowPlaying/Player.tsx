@@ -3,6 +3,7 @@ import useAccessToken from "@.hooks/useAccessToken";
 import PlayerServices from "@.services/player.services";
 import { usePlaybackStore } from "@.store/player";
 import { transferPlayback } from "@.utils/playerActions";
+import { IconDeviceMobile } from "@tabler/icons-react";
 import { useEffect } from "react";
 import { Monitor, Speaker } from "react-feather";
 import CurrentSong from "./CurrentSong";
@@ -46,6 +47,7 @@ const Player = () => {
           );
           return;
         }
+        player.resume();
       });
       player.connect();
     };
@@ -84,6 +86,7 @@ const Player = () => {
           return (
             <span key={device.id} className="flex items-center gap-2">
               {device.type === "Computer" && <Monitor size={18} />}
+              {device.type === "Smartphone" && <IconDeviceMobile size={19} />}
               <button
                 data-id={device.id}
                 key={device.id}
